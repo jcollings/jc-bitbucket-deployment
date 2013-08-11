@@ -73,6 +73,21 @@ class JC_Admin_Wordpress_Deploy{
             'setting_id' => $this->config->prefix . '-bitbucket_settings'
         ));
 
+        add_settings_field('type', 'Repo Type', array($this, 'field_callback'), 'tab_settings', 'settings', array(
+            'type' => 'select',
+            'choices' => array('plugin' => 'Plugin', 'theme' => 'Theme'),
+            'field_id' => 'type',
+            'section_id' => 'settings',
+            'setting_id' => $this->config->prefix . '-bitbucket_settings'
+        ));
+
+        add_settings_field('folder', 'Folder', array($this, 'field_callback'), 'tab_settings', 'settings', array(
+            'type' => 'text',
+            'field_id' => 'folder',
+            'section_id' => 'settings',
+            'setting_id' => $this->config->prefix . '-bitbucket_settings'
+        ));
+
     }
 
     /**
@@ -114,6 +129,22 @@ class JC_Admin_Wordpress_Deploy{
                 ?>
                 <input class='text' type='password' id='<?php echo $setting_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]' value='<?php echo $value; ?>' />
                 <?php
+                break;
+            }
+            case 'select':
+            {
+                    ?>
+                    <select id="<?php echo $setting_id; ?>" name="<?php echo $setting_id; ?>[<?php echo $field_id; ?>][]" <?php if($multiple === true): ?>multiple<?php endif; ?>>
+                    <?php
+                    foreach($choices as $id => $name):?>
+                        <?php if(isset($options[$field_id]) && is_array($options[$field_id]) && in_array($id,$options[$field_id])): ?>
+                        <option value="<?php echo $id; ?>" selected="selected"><?php echo $name; ?></option>
+                        <?php else: ?>
+                        <option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                    </select>
+                    <?php
                 break;
             }
         }

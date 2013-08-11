@@ -17,6 +17,7 @@ class JC_Wordpress_Deploy{
 	var $user = '';
 	var $pass = '';
 	var $repo = '';
+	var $type = 'theme'; // theme | plugin
 	var $deploy = false;
 
 	var $extract_dir = false;
@@ -33,8 +34,9 @@ class JC_Wordpress_Deploy{
 
 		$this->plugin_dir =  plugin_dir_path( __FILE__ );
 		$this->plugin_url = plugins_url( '/', __FILE__ );
+		
 		$this->file = __FILE__;
-		$this->deploy = WP_PLUGIN_DIR . '/test/';
+
 
 		$this->setupExtractDirectory();
 
@@ -65,6 +67,18 @@ class JC_Wordpress_Deploy{
 		$this->user = $settings['user'];
 		$this->pass = $settings['pass'];
 		$this->repo = $settings['repo'];
+		$this->type = isset($settings['type'][0]) && $settings['type'][0] == 'plugin' ? 'plugin' : 'theme';
+		$this->folder = $settings['folder'];
+		
+		switch($this->type){
+			case 'plugin':
+				$this->deploy = WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR;
+			break;
+			case 'theme':
+				$this->deploy = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR;
+			break;
+		}
+		
 	}
 
 	/**
