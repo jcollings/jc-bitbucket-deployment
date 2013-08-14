@@ -7,6 +7,7 @@
 	<?php if($errors = $this->config->errors): ?>
 	<p>Please fix the following errors to complete setup.</p>
 	<?php foreach($errors as $e): ?>
+
 	
 	<div id="message" class="error below-h2">
 		<p><?php echo $e; ?></p>

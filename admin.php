@@ -48,7 +48,7 @@ class JC_Admin_Wordpress_Deploy{
     public function register_settings(){
 
         // Settings
-        register_setting($this->config->option_group, $this->config->prefix . '-bitbucket_settings');
+        register_setting($this->config->option_group, $this->config->prefix . '-bitbucket_settings', array($this, 'save_settings'));
 
         add_settings_section('settings', 'Bitbucket Repository', array($this, 'section_settings'), 'tab_settings');
 
@@ -125,7 +125,7 @@ class JC_Admin_Wordpress_Deploy{
             }
             case 'password':
             {
-                $value = isset($options[$field_id]) ? $options[$field_id] : '';
+                $value = '';
                 ?>
                 <input class='text' type='password' id='<?php echo $setting_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]' value='<?php echo $value; ?>' />
                 <?php

@@ -40,6 +40,8 @@ class JC_Wordpress_Deploy{
 
 		$this->setupExtractDirectory();
 
+		$this->payload = isset($_POST['payload']) && !empty($_POST['payload']) ? $_POST['payload'] : false;
+
 		add_action( 'init' , array( $this , 'init' ) );
 		add_filter( 'rewrite_rules_array', array( $this , 'rewrite_url' ) );
 

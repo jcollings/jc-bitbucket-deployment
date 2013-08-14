@@ -28,7 +28,7 @@ class BitbucketDeploy{
 		// setup config
 		$this->download_name = $this->config->extract_dir . '/download.zip';
  
-		$json = isset($_POST['payload']) ? $_POST['payload'] : false;
+		$json = $this->config->payload; //isset($_POST['payload']) ? $_POST['payload'] : false;
 		if($json){
 			$data = json_decode($json);	// decode json into php object
  
@@ -97,35 +97,6 @@ class BitbucketDeploy{
 				// delete zip file
 				unlink($this->download_name);
 			}
-		}else{
-
-			$this->process = 'deploy';
- 
-			// download repo
-			if(!$this->get_repo('master')){
-				$this->log('Download of Repo Failed');
-				return;
-			}
-
-			// unzip repo download
-			if(!$this->unzip_repo()){
-				$this->log('Unzip Failed');
-				return;
-			}
-
-			$node = $this->get_node_from_dir();
-
-			$message = 'Bitbucket post failed, complete deploy';
-			if(!$node){
-				$this->log('Node could not be set, no unziped repo');
-				return;	
-			}
-
-			// append changes to destination
-			$this->parse_changes($node, $message);
-
-			// delete zip file
-			unlink($this->download_name);
 		}
 	}
  
