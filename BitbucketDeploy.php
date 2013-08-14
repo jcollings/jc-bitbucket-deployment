@@ -7,7 +7,7 @@
 class BitbucketDeploy{
  
 	private $download_name = 'download.zip'; // name of downloaded zip file
-	private $debug = true;	// false = hide output
+	private $debug = false;	// false = hide output
 	private $process = 'update'; // deploy or update
 
 	/**
@@ -24,6 +24,11 @@ class BitbucketDeploy{
  
 	function __construct(&$config){
 		$this->config = $config;
+
+		// show debug log
+		if(WP_DEBUG == true){
+			$this->debug = false;
+		}
 
 		// setup config
 		$this->download_name = $this->config->extract_dir . '/download.zip';
