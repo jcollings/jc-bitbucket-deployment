@@ -157,6 +157,11 @@ class JC_Admin_Wordpress_Deploy{
      * @return array
      */
     public function save_settings($args){
+        if(isset($args['pass'])){
+            if(empty($args['pass'])){
+                unset($args['pass']);
+            }
+        }
         return $args;
     }
 
