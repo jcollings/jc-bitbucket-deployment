@@ -31,8 +31,8 @@ class JC_Deploy{
 	 * @param  string $message 
 	 * @return void
 	 */
-	protected function log($message = ''){
-		if(!$this->debug)
+	protected function log($message = '', $override = false){
+		if(!$this->debug && !$override)
 			return false;
  
 		$message = date('d-m-Y H:i:s') . ' : ' . $message . "\n";

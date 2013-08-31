@@ -48,13 +48,13 @@ class BitbucketDeploy_CURL extends JC_Deploy{
  
 					// download repo
 					if(!$this->get_repo($node)){
-						$this->log('Download of Repo Failed');
+						$this->log('Download of Repo Failed', true);
 						return;
 					}
  
 					// unzip repo download
 					if(!$this->unzip_repo()){
-						$this->log('Unzip Failed');
+						$this->log('Unzip Failed', true);
 						return;
 					}
  
@@ -70,20 +70,20 @@ class BitbucketDeploy_CURL extends JC_Deploy{
  
 				// download repo
 				if(!$this->get_repo('master')){
-					$this->log('Download of Repo Failed');
+					$this->log('Download of Repo Failed', true);
 					return;
 				}
  
 				// unzip repo download
 				if(!$this->unzip_repo()){
-					$this->log('Unzip Failed');
+					$this->log('Unzip Failed', true);
 					return;
 				}
  
 				$node = $this->get_node_from_dir();
 				$message = 'Bitbucket post failed, complete deploy';
 				if(!$node){
-					$this->log('Node could not be set, no unziped repo');
+					$this->log('Node could not be set, no unziped repo', true);
 					return;	
 				}
  
@@ -93,6 +93,8 @@ class BitbucketDeploy_CURL extends JC_Deploy{
 				// delete zip file
 				unlink($this->download_name);
 			}
+		}else{
+			$this->log('No Payload', true);
 		}
 	}
  
@@ -164,8 +166,8 @@ class BitbucketDeploy_CURL extends JC_Deploy{
 		if(!is_dir($this->config->deploy))
 			$this->process = 'deploy';
  
-		$this->log('Process: '.$this->process);
-		$this->log('Commit Message: '.$message);
+		$this->log('Process: '.$this->process, true);
+		$this->log('Commit Message: '.$message, true);
  
 		$dest = $this->config->deploy;
 

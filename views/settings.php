@@ -7,6 +7,19 @@
 		<p>Please install php mcrypt module to secure your password.</p>
 	</div>
 	<?php endif; ?>
+	
+	<?php if($this->config->deploy_key): ?>
+	<div id="message" class="updated below-h2">
+		<?php 
+		if ( get_option('permalink_structure') ) {
+			$url = '/deploy/'. $this->config->deploy_key;
+		}else{
+			$url = '/?deploy_key='. $this->config->deploy_key;
+		}
+		?>
+		<p>Deploy URL: <?php echo site_url( $url); ?></p>
+	</div>
+	<?php endif; ?>
 
 	<p>Settings to allow you to automatically update your bitbucket repository.</p>
 

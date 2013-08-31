@@ -23,7 +23,7 @@ class JC_Wordpress_Deploy{
 
 	var $extract_dir = false;
 	var $repo_dir = false;
-	var $deploy_key = 'abc1234';
+	var $deploy_key = '';
 
 	var $file = false;
 	var $prefix = 'jcwd';
@@ -44,7 +44,6 @@ class JC_Wordpress_Deploy{
 
 		add_action( 'init' , array( $this , 'init' ) );
 		add_filter( 'rewrite_rules_array', array( $this , 'rewrite_url' ) );
-
 		add_action( 'query_vars' , array( $this, 'register_query_vars' ) );
 		add_action( 'template_redirect' , array( $this, 'template_redirect' ) );
 	}
@@ -73,6 +72,12 @@ class JC_Wordpress_Deploy{
 		$this->repo = $settings['repo'];
 		$this->type = isset($settings['type'][0]) && $settings['type'][0] == 'plugin' ? 'plugin' : 'theme';
 		$this->folder = $settings['folder'];
+
+		// set deploy key and save it to the database
+		if(empty($this->deploy_key))
+			add_option( $this->prefix . '-deploy-key', substr(md5(time()), 0, 8 ));
+		
+		$this->deploy_key = get_option( $this->prefix.'-deploy-key');
 		
 		switch($this->type){
 			case 'plugin':
