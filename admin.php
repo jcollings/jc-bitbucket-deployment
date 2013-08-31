@@ -158,12 +158,17 @@ class JC_Admin_Wordpress_Deploy{
     public function save_settings($args){
         
         if(isset($args['pass'])){
+            
             if(empty($args['pass'])){
-                unset($args['pass']);
+                // fix to not clear the password
+                $settings = get_option( $this->config->prefix . '-bitbucket_settings');
+                $args['pass'] = $settings['pass'];
+                // unset($args['pass']);
             }else{
                 $args['pass'] = $this->config->encrypt->encrypt($args['pass']);
             }
         }
+
         return $args;
     }
 

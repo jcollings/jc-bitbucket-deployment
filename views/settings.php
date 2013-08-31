@@ -2,13 +2,17 @@
 	<div id="icon-tools" class="icon32"><br></div>
 	<h2>Bitbucket Deployment Settings</h2>
 
+	<?php if(!function_exists('mcrypt_encrypt')): ?>
+	<div id="message" class="updated below-h2">
+		<p>Please install php mcrypt module to secure your password.</p>
+	</div>
+	<?php endif; ?>
+
 	<p>Settings to allow you to automatically update your bitbucket repository.</p>
 
 	<?php if($errors = $this->config->errors): ?>
 	<p>Please fix the following errors to complete setup.</p>
 	<?php foreach($errors as $e): ?>
-
-	
 	<div id="message" class="error below-h2">
 		<p><?php echo $e; ?></p>
 	</div>

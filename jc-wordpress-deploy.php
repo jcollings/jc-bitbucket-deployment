@@ -84,7 +84,6 @@ class JC_Wordpress_Deploy{
 				$this->deploy = WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'themes' . DIRECTORY_SEPARATOR . $this->folder . DIRECTORY_SEPARATOR;
 			break;
 		}
-		
 	}
 
 	/**
