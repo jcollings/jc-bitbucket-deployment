@@ -27,9 +27,6 @@ class BitbucketDeploy_CURL extends JC_Deploy{
 		$json = $this->config->payload; //isset($_POST['payload']) ? $_POST['payload'] : false;
 		if($json){
 			$data = json_decode($json);	// decode json into php object
-
-			// development
-			wp_mail( 'james@jclabs.co.uk', 'Deployment Payload', "\$_POST:\n\n".print_r($_POST['payload'],true));
  
 			// process all commits
 			if(count($data->commits) > 0){
