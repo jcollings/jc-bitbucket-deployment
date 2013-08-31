@@ -108,8 +108,7 @@ class JC_Admin_Wordpress_Deploy{
      * @param  array $args 
      * @return void
      */
-    public function field_callback($args)
-    {
+    public function field_callback($args){
         $multiple = false;
         extract($args);
         $options = get_option($setting_id);
@@ -127,7 +126,7 @@ class JC_Admin_Wordpress_Deploy{
             {
                 $value = '';
                 ?>
-                <input class='text' type='password' id='<?php echo $setting_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]' value='<?php echo $value; ?>' />
+                <input class='text' type='text' id='<?php echo $setting_id; ?>' name='<?php echo $setting_id; ?>[<?php echo $field_id; ?>]' value='<?php echo $value; ?>' />
                 <?php
                 break;
             }
@@ -157,9 +156,12 @@ class JC_Admin_Wordpress_Deploy{
      * @return array
      */
     public function save_settings($args){
+        
         if(isset($args['pass'])){
             if(empty($args['pass'])){
                 unset($args['pass']);
+            }else{
+                $args['pass'] = $this->config->encrypt->encrypt($args['pass']);
             }
         }
         return $args;

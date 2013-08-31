@@ -1,20 +1,15 @@
 <?php 
+require 'Deploy.php';
+
 /**
  * Bitbucket POST Deployment Class
  * @author  James Collings <james@jclabs.co.uk>
  * @version 0.0.1
  */
-class BitbucketDeploy{
+class BitbucketDeploy_CURL extends JC_Deploy{
  
 	private $download_name = 'download.zip'; // name of downloaded zip file
-	private $debug = false;	// false = hide output
 	private $process = 'update'; // deploy or update
-
-	/**
-	 * Plugin config
-	 * @var stdClass
-	 */
-	private $config = null;
  
 	// files to ignore in directory
 	private $ignore_files = array('README.md', '.gitignore', '.', '..');
@@ -23,12 +18,8 @@ class BitbucketDeploy{
 	private $files = array('modified' => array(), 'added' => array(), 'removed' => array());
  
 	function __construct(&$config){
-		$this->config = $config;
 
-		// show debug log
-		if(WP_DEBUG == true){
-			$this->debug = false;
-		}
+		parent::__construct($config);
 
 		// setup config
 		$this->download_name = $this->config->extract_dir . '/download.zip';
@@ -36,6 +27,9 @@ class BitbucketDeploy{
 		$json = $this->config->payload; //isset($_POST['payload']) ? $_POST['payload'] : false;
 		if($json){
 			$data = json_decode($json);	// decode json into php object
+
+			// development
+			wp_mail( 'james@jclabs.co.uk', 'Deployment Payload', "\$_POST:\n\n".print_r($_POST['payload'],true));
  
 			// process all commits
 			if(count($data->commits) > 0){
@@ -141,7 +135,7 @@ class BitbucketDeploy{
 
  
 		// http authentication to access the download
-		curl_setopt($ch, CURLOPT_USERPWD, $this->config->user.":".$this->config->pass);
+		curl_setopt($ch, CURLOPT_USERPWD, $this->config->user.":".$this->config->encrypt->decrypt($this->config->pass));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
  
@@ -269,19 +263,6 @@ class BitbucketDeploy{
 			}
 		}
 		return false;
-	}
- 
-	/**
-	 * Write log file
-	 * @param  string $message 
-	 * @return void
-	 */
-	private function log($message = ''){
-		if(!$this->debug)
-			return false;
- 
-		$message = date('d-m-Y H:i:s') . ' : ' . $message . "\n";
-		file_put_contents($this->config->extract_dir . '/log.txt', $message, FILE_APPEND);
 	}
  
 	/**
