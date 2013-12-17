@@ -52,6 +52,7 @@ class JC_Wordpress_Deploy{
 	/**
 	 * Plugin activation
 	 * 
+	 * @return void
 	 */
 	static function activate() {
 
@@ -67,6 +68,7 @@ class JC_Wordpress_Deploy{
 	/**
 	 * Plugin deactivation
 	 * 
+	 * @return void
 	 */
 	static function deactivate() {
 
