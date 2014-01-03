@@ -1,5 +1,4 @@
 #jc-bitbucket-deployment
-=======================
 
 Wordpress plugin to deploy private bitbucket repositories to plugin or theme folder
 
