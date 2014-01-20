@@ -35,6 +35,9 @@ class JC_Wordpress_Deploy{
 
 	public function __construct(){
 
+		register_activation_hook( __FILE__, array( $this, 'activate' ) );
+		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
+
 		$this->plugin_dir =  plugin_dir_path( __FILE__ );
 		$this->plugin_url = plugins_url( '/', __FILE__ );
 		
@@ -43,9 +46,35 @@ class JC_Wordpress_Deploy{
 		$this->payload = isset($_POST['payload']) && !empty($_POST['payload']) ? $_POST['payload'] : false;
 
 		add_action( 'init' , array( $this , 'init' ) );
-		add_filter( 'rewrite_rules_array', array( $this , 'rewrite_url' ) );
-		add_action( 'query_vars' , array( $this, 'register_query_vars' ) );
 		add_action( 'template_redirect' , array( $this, 'template_redirect' ) );
+	}
+
+	/**
+	 * Plugin activation
+	 * 
+	 * @return void
+	 */
+	static function activate() {
+
+		// add the plugin-related rewrite rules
+		add_rewrite_rule('deploy/(.+?)/?$', 'index.php?deploy_key=$matches[1]', 'top');
+		add_rewrite_tag('%deploy_key%','(.+?)');
+
+		// flush the rewrite rules
+		global $wp_rewrite;
+		$wp_rewrite->flush_rules();
+	}
+
+	/**
+	 * Plugin deactivation
+	 * 
+	 * @return void
+	 */
+	static function deactivate() {
+
+		// flush the rewrite rules
+		global $wp_rewrite;
+		$wp_rewrite->flush_rules();
 	}
 
 	/**
@@ -151,30 +180,6 @@ class JC_Wordpress_Deploy{
 		// check deploy dir
 		$this->checkDirPermissions($this->deploy);
 	}
-
-
-	/**
-	 * Create permalink entry
-	 *
-	 * Add /deploy/[a-z0-9]/ to the list for rewrite rules
-	 * 
-	 * @param  array  $rules
-	 * @return void
-	 */
-	public function rewrite_url( $rules = array() ){
-		return array_merge(array('deploy/(.+?)/?$' => 'index.php?deploy_key=$matches[1]'), $rules);
-	}
-
-	/**
-	 * Register deploy key var with wordpress
-	 * 
-	 * @param  array $public_query_vars
-	 * @return array
-	 */
-    function register_query_vars( $public_query_vars ){
-        $public_query_vars[] = 'deploy_key';
-        return $public_query_vars;
-    }
 
     /**
      * Activate deployment if url has deploy key
