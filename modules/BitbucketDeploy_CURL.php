@@ -28,13 +28,18 @@ class BitbucketDeploy_CURL extends JC_Deploy{
 		if($json){
 			$data = json_decode($json);	// decode json into php object
  
+			if ($data->repository && $data->repository->absolute_url) {
+				$absolute_url = $data->repository->absolute_url;	// capture repo absolute_url
+			} else {
+				$absolute_url = false;
+			}
 			// process all commits
 			if(count($data->commits) > 0){
 				foreach($data->commits as $commit){
  
-					$node = $commit->node;	// capture repo node
-					$files = $commit->files;	// capture repo file changes
-					$message = $commit->message;	// capture repo message
+					$node = $commit->node;	// capture commit's node
+					$files = $commit->files;	// capture commit's file changes
+					$message = $commit->message;	// capture commit's message
  
 					// reset files list
 					$this->files = array(
@@ -47,7 +52,7 @@ class BitbucketDeploy_CURL extends JC_Deploy{
 					}
  
 					// download repo
-					if(!$this->get_repo($node)){
+					if(!$this->get_repo($node, $absolute_url)){
 						$this->log('Download of Repo Failed', true);
 						return;
 					}
@@ -69,7 +74,7 @@ class BitbucketDeploy_CURL extends JC_Deploy{
 				$this->process = 'deploy';
  
 				// download repo
-				if(!$this->get_repo('master')){
+				if(!$this->get_repo('master', $absolute_url)){
 					$this->log('Download of Repo Failed', true);
 					return;
 				}
@@ -124,13 +129,18 @@ class BitbucketDeploy_CURL extends JC_Deploy{
 	 * @param  string $node 
 	 * @return boolean
 	 */
-	function get_repo($node = ''){
+	function get_repo($node = '', $absolute_url = false){
  
 		// create the zip folder
 		$fp = fopen($this->download_name, 'w');
  
 		// set download url of repository for the relating node
-		$ch = curl_init("https://bitbucket.org/".$this->config->user."/".$this->config->repo."/get/".$node.".zip");
+		if ($absolute_url) {
+			$node_url = "https://bitbucket.org".$absolute_url."get/".$node.".zip";
+		} else {
+			$node_url = "https://bitbucket.org/".$this->config->user."/".$this->config->repo."/get/".$node.".zip";
+		}
+		$ch = curl_init($node_url);
 
  
 		// http authentication to access the download
