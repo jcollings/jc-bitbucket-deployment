@@ -58,7 +58,6 @@ class JC_Wordpress_Deploy{
 
 		// add the plugin-related rewrite rules
 		add_rewrite_rule('deploy/(.+?)/?$', 'index.php?deploy_key=$matches[1]', 'top');
-		add_rewrite_tag('%deploy_key%','(.+?)');
 
 		// flush the rewrite rules
 		global $wp_rewrite;
@@ -83,6 +82,10 @@ class JC_Wordpress_Deploy{
 	 * @return void
 	 */
 	public function init(){
+
+		// make the query_var available from the re-written URL
+		add_rewrite_tag('%deploy_key%','(.+?)');
+
 		$this->load_settings();
 		$this->load_modules();
 
